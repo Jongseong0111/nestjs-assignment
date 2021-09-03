@@ -1,8 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { timeStamp } from 'console';
-import { exists } from 'fs';
-import { Entity, EntityRepository, Repository } from 'typeorm';
 import { Users } from './users.entity';
 import { UserRepository } from './users.repository';
 import { UserCreateDto } from './users.request.dto';
@@ -16,7 +12,7 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  getUsers() {
+  getUsers(): Promise<Users[]> {
     return this.usersRepository.find();
   }
 
