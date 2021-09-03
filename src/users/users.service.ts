@@ -40,7 +40,7 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async deleteUser(id: number) {
-    await this.usersRepository.delete(id);
+  async deleteUser(user_id: number) {
+    await this.usersRepository.delete(user_id);
   }
 }
