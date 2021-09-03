@@ -19,7 +19,24 @@ describe('UsersController', () => {
       user_id,
       ...dto,
     })),
-    getUsers: jest.fn().mockImplementation(() => []),
+    getUsers: jest.fn().mockImplementation(() => [
+      {
+        user_id: expect.any(Number),
+        user_name: expect.any(String),
+        user_email: expect.any(String),
+        user_account: expect.any(String),
+        user_password: expect.any(String),
+        user_type: expect.any(String),
+      },
+      {
+        user_id: expect.any(Number),
+        user_name: expect.any(String),
+        user_email: expect.any(String),
+        user_account: expect.any(String),
+        user_password: expect.any(String),
+        user_type: expect.any(String),
+      },
+    ]),
 
     getUser: jest.fn().mockImplementation((user_id) => ({
       user_id: user_id,
@@ -63,17 +80,38 @@ describe('UsersController', () => {
     };
     const result = await controller.createUser(dto);
 
-    jest.mock('axios');
-
     expect(result).toEqual(createdUser);
     expect(mockUserService.createUser).toHaveBeenCalledWith(dto);
   });
 
   it('should get all users', async () => {
+    const users = [
+      {
+        user_id: expect.any(Number),
+        user_name: expect.any(String),
+        user_email: expect.any(String),
+        user_account: expect.any(String),
+        user_password: expect.any(String),
+        user_type: expect.any(String),
+      },
+      {
+        user_id: expect.any(Number),
+        user_name: expect.any(String),
+        user_email: expect.any(String),
+        user_account: expect.any(String),
+        user_password: expect.any(String),
+        user_type: expect.any(String),
+      },
+    ];
+
+    const serviceSpy = jest
+      .spyOn(mockUserService, 'getUsers')
+      .mockResolvedValue(users);
     const result = await controller.getUsers();
 
+    expect(serviceSpy).toBeCalled();
     expect(mockUserService.getUsers).toHaveBeenCalledTimes(1);
-    expect(result).toEqual([]);
+    expect(result).toEqual(users);
   });
 
   it('should get a user', async () => {
