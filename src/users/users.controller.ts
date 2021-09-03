@@ -15,8 +15,8 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
   @Post()
-  createUser(@Body() userCreateDto: UserCreateDto) {
-    return this.userService.createUser(userCreateDto);
+  async createUser(@Body() userCreateDto: UserCreateDto) {
+    return await this.userService.createUser(userCreateDto);
   }
 
   @Get()
@@ -24,13 +24,21 @@ export class UsersController {
     return this.userService.getUsers();
   }
 
+  @Get(':id')
+  async getUser(@Param('id') id: number) {
+    return await this.userService.getUser(id);
+  }
+
   @Put(':id')
-  updateUser(@Param('id') id: number, @Body() userCreateDto: UserCreateDto) {
-    return this.userService.updateUser(id, userCreateDto);
+  async updateUser(
+    @Param('id') id: number,
+    @Body() userCreateDto: UserCreateDto,
+  ) {
+    return await this.userService.updateUser(id, userCreateDto);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: number) {
-    return this.userService.deleteUser(id);
+  async deleteUser(@Param('id') id: number) {
+    return await this.userService.deleteUser(id);
   }
 }
