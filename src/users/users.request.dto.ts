@@ -4,7 +4,7 @@ import { UserType } from './users.entity';
 export class UserCreateDto {
   @IsNotEmpty()
   @IsNumber()
-  user_id: number;
+  user_id?: number;
 
   @IsNotEmpty()
   @IsString()

@@ -3,8 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
-  Patch,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -14,23 +15,34 @@ import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
+
   @Post()
-  createUser(@Body() userCreateDto: UserCreateDto) {
-    return this.userService.createUser(userCreateDto);
+  @HttpCode(201)
+  async createUser(@Body() userCreateDto: UserCreateDto) {
+    return await this.userService.createUser(userCreateDto);
   }
 
   @Get()
-  getUsers() {
-    return this.userService.getUsers();
+  async getUsers() {
+    return await this.userService.getUsers();
+  }
+
+  @Get(':id')
+  async getUser(@Param('id', new ParseIntPipe()) id: number) {
+    return await this.userService.getUser(id);
   }
 
   @Put(':id')
-  updateUser(@Param('id') id: number, @Body() userCreateDto: UserCreateDto) {
-    return this.userService.updateUser(id, userCreateDto);
+  async updateUser(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() userCreateDto: UserCreateDto,
+  ) {
+    return await this.userService.updateUser(id, userCreateDto);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: number) {
+  @HttpCode(204)
+  async deleteUser(@Param('id', new ParseIntPipe()) id: number) {
     return this.userService.deleteUser(id);
   }
 }

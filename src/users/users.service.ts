@@ -1,35 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { exists } from 'fs';
-import { Repository } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Users } from './users.entity';
+import { UserRepository } from './users.repository';
 import { UserCreateDto } from './users.request.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(Users)
-    private usersRepository: Repository<Users>,
-  ) {}
+  constructor(private readonly usersRepository: UserRepository) {}
 
-  async createUser(userCreateDto: UserCreateDto) {
-    const result = await this.usersRepository.save(userCreateDto);
-    return result;
+  async createUser(userCreateDto: UserCreateDto): Promise<Users> {
+    const user = this.usersRepository.create(userCreateDto);
+    return await this.usersRepository.save(user);
   }
 
-  async getUsers() {
-    const result = await this.usersRepository.find();
-    return result;
+  getUsers(): Promise<Users[]> {
+    return this.usersRepository.find();
   }
 
-  async updateUser(id: number, userCreateDto: UserCreateDto) {
-    await this.usersRepository.update(id, userCreateDto);
-    console.log(`Update User Id ${id}`);
-    return this.usersRepository.findOne(id);
+  async getUser(id: number): Promise<Users> {
+    const user = await this.usersRepository.findOne(id);
+
+    if (user === undefined) {
+      throw new NotFoundException('User Not Found');
+    }
+    return user;
   }
 
-  async deleteUser(id: number) {
-    await this.usersRepository.delete(id);
-    console.log(`Delete User Id ${id}`);
+  async updateUser(id: number, userCreateDto: UserCreateDto): Promise<Users> {
+    const user = await this.usersRepository.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException('User Not Found');
+    }
+    user.user_account = userCreateDto.user_account;
+    user.user_email = userCreateDto.user_email;
+    user.user_name = userCreateDto.user_name;
+    user.user_password = userCreateDto.user_password;
+    user.user_type = userCreateDto.user_type;
+
+    return await this.usersRepository.save(user);
+  }
+
+  async deleteUser(user_id: number) {
+    await this.usersRepository.delete(user_id);
   }
 }

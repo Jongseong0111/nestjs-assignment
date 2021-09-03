@@ -5,19 +5,19 @@ export type UserType = 'manufacturer' | 'genuio';
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()
-  user_id: number;
+  user_id!: number;
 
   @Column()
-  user_name: string;
+  user_name!: string;
 
   @Column()
-  user_email: string;
+  user_email!: string;
 
   @Column()
-  user_account: string;
+  user_account!: string;
 
   @Column()
-  user_password: string;
+  user_password!: string;
 
   @Column({
     default: 'manufacturer',
