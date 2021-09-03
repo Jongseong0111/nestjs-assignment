@@ -195,6 +195,7 @@ describe('UsersService', () => {
       const result = await service.updateUser(user_id, dto);
 
       expect(usersRepositoryFindOneSpy).toHaveBeenCalledWith(user_id);
+      expect(usersRepositorySaveSpy).toHaveBeenCalledWith(updatedUser);
 
       expect(result).toBe(updatedUser);
     });
