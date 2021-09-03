@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { UsersController } from './users.controller';
 import { Users } from './users.entity';
-import { UserRepository } from './users.repository';
 import { UserCreateDto } from './users.request.dto';
 import { UsersService } from './users.service';
 import * as faker from 'faker';
+import axios from 'axios';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -35,7 +35,7 @@ describe('UsersController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [UsersService, UserRepository],
+      providers: [UsersService],
     })
       .overrideProvider(UsersService)
       .useValue(mockUserService)
@@ -62,6 +62,8 @@ describe('UsersController', () => {
       user_type: dto.user_type,
     };
     const result = await controller.createUser(dto);
+
+    jest.mock('axios');
 
     expect(result).toEqual(createdUser);
     expect(mockUserService.createUser).toHaveBeenCalledWith(dto);
